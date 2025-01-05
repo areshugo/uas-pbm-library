@@ -44,7 +44,11 @@ async function deleteBook(event, bookId) {
 
   try {
     // Encode the query string
-    const encodedQuery = encodeURIComponent(`delete from Ao2HHkALjkDMjfci where id='${bookId}'`);
+    const query = `delete from Ao2HHkALjkDMjfci where id='id0007'`;
+    const encodedQuery = encodeURIComponent(query);
+    console.log(`${API_URL}?query=${encodedQuery}`);
+    // Logs: https://api.apispreadsheets.com/data/Ao2HHkALjkDMjfci/?query=delete%20from%20Ao2HHkALjkDMjfci%20where%20id%3D%27id0007%27
+
     const response = await fetch(`${API_URL}?query=${encodedQuery}`);
     
     if (response.status === 200) {
