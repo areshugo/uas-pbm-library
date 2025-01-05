@@ -130,6 +130,7 @@ async function createBook(event) {
 
 // Load books when the page loads
 window.onload = () => {
-  loadBooks();
   document.getElementById("create-form").addEventListener("submit", createBook);
+  loadBooks();
 };
+
