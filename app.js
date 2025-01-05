@@ -18,24 +18,22 @@ async function loadBooks() {
         // Loop through each book and create a card
         books.forEach(book => {
             const bookCard = `
-                <div class="col-md-4">
-                    <div class="card book-card">
-                        <div class="book-image">
-                            <img src="${book.img}" alt="${book.title}">
-                        </div>
-                        <div class="book-details">
-                            <h5 class="book-title">${book.title}</h5>
-                            <p class="book-author">by ${book.author}</p>
-                            <p class="book-desc">${book.desc}</p>
-                            <p class="book-abstract">${book.abstract}</p>
-                            <div class="buttons">
-                                <form method="POST" action="/update/${book.id}" style="display: inline;">
-                                    <button type="submit" class="btn btn-warning">Update</button>
-                                </form>
-                                <form method="POST" action="/delete/${book.id}" style="display: inline;">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            </div>
+                <div class="book-card">
+                    <div class="book-image">
+                        <img src="${book.img}" alt="${book.title}">
+                    </div>
+                    <div class="book-details">
+                        <h5 class="book-title">${book.title}</h5>
+                        <p class="book-author">by ${book.author}</p>
+                        <p class="book-desc">${book.desc}</p>
+                        <p class="book-abstract">${book.abstract}</p>
+                        <div class="buttons">
+                            <form method="POST" action="/update/${book.id}" style="display: inline;">
+                                <button type="submit" class="btn btn-warning">Update</button>
+                            </form>
+                            <form method="POST" action="/delete/${book.id}" style="display: inline;">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
