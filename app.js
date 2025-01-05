@@ -43,38 +43,20 @@ async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    // Step 1: Fetch the entire dataset
-    const fetchResponse = await fetch(API_URL);
-    const data = await fetchResponse.json();
-    const books = data.data;
+    // Use the DELETE query provided by the API documentation
+    const deleteUrl = `${API_URL}?query=delete from 3a24vZuKqrS2rNnl where id='${bookId}'`;
 
-    // Debug: Ensure `books` contains the right data
-    console.log("Original books array:", books);
+    // Make the DELETE request
+    const deleteResponse = await fetch(deleteUrl);
 
-    // Step 2: Filter out the book to delete
-    const updatedBooks = books.filter(book => book.id !== bookId);
-
-    // Debug: Verify `updatedBooks`
-    console.log("Updated books array:", updatedBooks);
-
-    // Step 3: Overwrite the dataset without the deleted book
-    const overwriteResponse = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: updatedBooks,
-      }),
-    });
-
-    if (overwriteResponse.status === 201) {
+    // Check the response status
+    if (deleteResponse.status === 200) {
       alert("Book deleted successfully!");
-      loadBooks(); // Reload the updated book list
+      await loadBooks(); // Reload the updated book list
     } else {
-      const errorData = await overwriteResponse.json();
-      console.error("Failed to delete book. Server response:", errorData);
-      alert("Failed to delete book. Please try again.");
+      const errorDetails = await deleteResponse.json();
+      console.error("Error response from server:", errorDetails);
+      alert("Failed to delete the book. Please try again.");
     }
   } catch (error) {
     console.error("Error deleting book:", error);
