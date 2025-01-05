@@ -46,27 +46,22 @@ async function updateBook(event) {
   };
 
   try {
-    const response = await fetch(API_URL);
-    const data = await response.json();
-    const books = data.data;
-
-    // Find and remove the old book
-    const updatedBooks = books.filter(book => book.id !== bookId);
-
-    // Add the updated book to the list
-    updatedBooks.push({
-      id: bookId, // Keep the same ID
-      ...updatedData,
-    });
-
-    // Send the updated list of books back to the API
+    // Send a POST request with the updated data and query to update the record
     const updateResponse = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        data: updatedBooks,
+        data: {
+          id: bookId,
+          title: updatedData.title,
+          author: updatedData.author,
+          img: updatedData.img,
+          desc: updatedData.desc,
+          abstract: updatedData.abstract,
+        },
+        query: `select * from Ao2HHkALjkDMjfci where id='${bookId}'`,  // Ensure this query matches the format used in your example
       }),
     });
 
