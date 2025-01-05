@@ -60,17 +60,17 @@ async function deleteBook(event, bookId) {
       body: JSON.stringify(deleteData),
     });
 
-    // Check the response status
+    // Log the full response status and text
+    const responseText = await deleteResponse.text();
+    console.log("Delete response status:", deleteResponse.status);
+    console.log("Delete response text:", responseText);
+
     if (deleteResponse.status === 200) {
       alert("Book deleted successfully!");
       await loadBooks(); // Reload the updated book list
     } else {
-      // Check if the response body is empty or not
-      const responseText = await deleteResponse.text();
-      
-      // If the response is empty, log a generic message
+      // If the response body is empty, log the text
       const errorDetails = responseText ? JSON.parse(responseText) : { error: "Unknown error occurred" };
-      
       console.error("Error response from server:", errorDetails);
       alert("Failed to delete the book. Please try again.");
     }
