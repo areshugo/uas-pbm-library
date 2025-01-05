@@ -54,6 +54,7 @@ async function deleteBook(event, bookId) {
         // Mark the book as deleted by setting all fields to empty/null
         return {
           ...book,
+          id: "",
           title: "",
           author: "",
           img: "",
