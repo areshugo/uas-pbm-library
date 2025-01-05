@@ -72,8 +72,8 @@ body {
     }
 
     .book-image {
-        width: 50%; /* Use half of the available width for the image on mobile */
-        height: auto; /* Adjust height for mobile layout */
+        width: auto;
+        height: auto;
     }
 
     .book-image img {
