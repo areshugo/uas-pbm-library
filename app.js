@@ -117,7 +117,7 @@ async function createBook(event) {
 
     if (result.ok) {
       alert("Book added successfully!");
-      document.getElementById("create-form").reset();
+      document.getElementById("create-book-form").reset();
       loadBooks(); // Reload the book list after adding
     } else {
       alert("Failed to add the book. Please try again.");
@@ -130,7 +130,6 @@ async function createBook(event) {
 
 // Load books when the page loads
 window.onload = () => {
-  document.getElementById("create-form").addEventListener("submit", createBook);
   loadBooks();
+  document.getElementById("create-book-form").addEventListener("submit", createBook);
 };
-
