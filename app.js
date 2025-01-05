@@ -18,27 +18,24 @@ async function loadBooks() {
         // Loop through each book and create a card
         books.forEach(book => {
             const bookCard = `
-                <div class="book-card row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                    <div class="col-md-4 book-image">
-                        <img src="${book.img}" alt="${book.title}" class="img-fluid">
+                <div class="book-card">
+                    <div class="book-image">
+                        <img src="${book.img}" alt="${book.title}">
                     </div>
-                    <div class="col-md-8 book-details p-3">
+                    <div class="book-details">
                         <h5 class="book-title">${book.title}</h5>
                         <p class="book-author">by ${book.author}</p>
                         <p class="book-desc">${book.desc}</p>
-                        <p class="book-abstract">${book.abstract.length > 100 ? book.abstract.substring(0, 100) + '...' : book.abstract}</p>
+                        <p class="book-abstract">${book.abstract}</p>
                         <div class="buttons">
-                            <form method="POST" action="/update/${book.id}" style="display: inline;">
-                                <button type="submit" class="btn btn-warning">Update</button>
-                            </form>
+                            <a href="update.html?id=${book.id}" class="btn btn-warning">Update</a>
                             <form method="POST" action="/delete/${book.id}" style="display: inline;">
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">Delete</button>
                             </form>
                         </div>
                     </div>
                 </div>
             `;
-
             // Add the book card to the container
             bookContainer.innerHTML += bookCard;
         });
@@ -48,6 +45,49 @@ async function loadBooks() {
         bookContainer.innerHTML = '<p>Failed to load books. Please try again later.</p>';
     }
 }
+
+// Delete Book
+async function deleteBook(bookId) {
+    const response = await fetch(`${API_URL}${bookId}`, {
+        method: 'DELETE',
+    });
+
+    if (response.ok) {
+        alert('Book deleted successfully!');
+        loadBooks(); // Reload the books
+    } else {
+        alert('Failed to delete book.');
+    }
+}
+
+// Handle Create Book Form Submission
+document.getElementById('create-book-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const newBook = {
+        title: document.getElementById('title').value,
+        author: document.getElementById('author').value,
+        img: document.getElementById('img').value,
+        desc: document.getElementById('desc').value,
+        abstract: document.getElementById('abstract').value
+    };
+
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newBook),
+    });
+
+    if (response.ok) {
+        alert('Book added successfully!');
+        loadBooks(); // Reload the books
+        document.getElementById('create-book-form').reset(); // Clear the form
+    } else {
+        alert('Failed to add book.');
+    }
+});
 
 // Load books when the page loads
 window.onload = loadBooks;
