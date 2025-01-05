@@ -43,44 +43,22 @@ async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    // Step 1: Fetch the entire dataset
-    const fetchResponse = await fetch(API_URL);
-    const data = await fetchResponse.json();
-    const books = data.data;
+    // Construct the delete query URL
+    const queryUrl = `https://api.apispreadsheets.com/data/3a24vZuKqrS2rNnl/?query=delete%20from%203a24vZuKqrS2rNnl%20where%20id%3D'${bookId}'`;
 
-    // Step 2: Find the book to "delete" by setting its fields to empty/null
-    const updatedBooks = books.map(book => {
-      if (book.id === bookId) {
-        // Mark the book as deleted by setting all fields to empty/null
-        return {
-          ...book,
-          id: "",
-          title: "",
-          author: "",
-          img: "",
-          desc: "",
-          abstract: "",
-        };
-      }
-      return book; // Keep other books unchanged
-    });
-
-    // Step 3: Overwrite the CSV with the updated data
-    const overwriteResponse = await fetch(API_URL, {
-      method: "POST",
+    // Perform the delete request
+    const res = await fetch(queryUrl, {
+      method: "POST", // Use POST or DELETE as per the API's requirement
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        data: updatedBooks, // The book with fields set to null/empty will be effectively "deleted"
-      }),
     });
 
-    if (overwriteResponse.status === 201) {
-      alert("Book marked as deleted successfully!");
+    if (res.status === 200) {
+      alert("Book deleted successfully!");
       loadBooks(); // Reload the updated book list
     } else {
-      alert("Failed to mark book as deleted. Please try again.");
+      alert("Failed to delete book. Please try again.");
     }
   } catch (error) {
     console.error("Error deleting book:", error);
