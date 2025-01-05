@@ -43,7 +43,7 @@ async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    // Use the DELETE query provided by the API documentation
+    // Construct the DELETE query URL
     const deleteUrl = `${API_URL}?query=delete from 3a24vZuKqrS2rNnl where id='${bookId}'`;
 
     // Make the DELETE request
