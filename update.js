@@ -13,6 +13,7 @@ async function loadBookData() {
     const response = await fetch(API_URL);
     const data = await response.json();
 
+    // Find the book with the matching ID
     const book = data.data.find(book => book.id === bookId);
     if (book) {
       document.getElementById("title").value = book.title;
@@ -41,20 +42,26 @@ document.getElementById("update-form").addEventListener("submit", async function
   };
 
   try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        query: `update set title='${updatedBook.title}', author='${updatedBook.author}', desc='${updatedBook.desc}', abstract='${updatedBook.abstract}' where id='${updatedBook.id}'`,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+    // Construct the update query
+    const query = `
+      update set 
+      title='${updatedBook.title}', 
+      author='${updatedBook.author}', 
+      desc='${updatedBook.desc}', 
+      abstract='${updatedBook.abstract}' 
+      where id='${updatedBook.id}'
+    `.trim();
+
+    const response = await fetch(`${API_URL}?query=${encodeURIComponent(query)}`, {
+      method: "GET",
     });
 
     if (response.status === 200) {
       alert("Book updated successfully!");
       window.location.href = "index.html"; // Redirect to the main page
     } else {
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
       throw new Error("Failed to update book");
     }
   } catch (error) {
