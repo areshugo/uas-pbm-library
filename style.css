@@ -1,182 +1,80 @@
-/* General layout */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
+    background-color: #f7f7f7;
 }
 
-.container {
-    margin-top: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-/* Bootstrap featured post card layout */
 .book-card {
     display: flex;
-    flex-direction: row;
-    background-color: #ffffff;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    width: 100%;
-    max-width: 100%;
-    height: 250px; /* Fixed height for all cards */
-    overflow: hidden;
-    position: relative;
-    box-sizing: border-box;
-}
-
-.book-card:hover {
-    transform: translateY(-5px);
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .book-image {
-    width: 35%; /* Fixed width for image */
-    height: 100%; /* Full height of the card */
+    flex-shrink: 0;
+    width: 120px;
+    height: 180px;
     margin-right: 20px;
-    overflow: hidden;
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .book-image img {
-    max-width: 100%;
+    width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the area */
+    object-fit: cover;
+    border-radius: 5px;
 }
 
 .book-details {
     flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
 
 .book-title {
-    font-size: 1.5rem;
+    font-size: 18px;
     font-weight: bold;
-    margin-bottom: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Truncate long titles */
-    white-space: nowrap;
+    color: #333;
 }
 
 .book-author {
-    font-size: 1.2rem;
-    color: #555;
-    margin-bottom: 15px;
+    color: #666;
+    margin-bottom: 10px;
 }
 
 .book-desc, .book-abstract {
-    font-size: 1rem;
-    color: #333;
-    margin-bottom: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Truncate text with "..." if too long */
-    white-space: nowrap;
-    text-align: justify;
-    line-height: 1.4;
+    font-size: 14px;
+    color: #555;
 }
 
-.book-abstract {
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* Limit abstract text to 3 lines */
-    -webkit-box-orient: vertical;
-    height: 60px; /* Fixed height for the abstract */
-    overflow: hidden;
-    text-overflow: ellipsis;
+.book-actions {
+    margin-top: 10px;
 }
 
-/* Buttons for update and delete */
-.buttons {
-    display: flex;
-    justify-content: space-between;
+.buttons form {
+    display: inline-block;
+    margin-right: 10px;
 }
 
-.buttons .btn {
-    padding: 10px;
-    border: none;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
+.btn {
+    font-size: 14px;
 }
 
-.buttons .btn.delete {
-    background-color: #f44336;
-}
-
-.buttons .btn:hover {
-    opacity: 0.8;
-}
-
-/* Responsive design for single grid card */
-.card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-/* Mobile design */
+/* Responsive design */
 @media (max-width: 768px) {
     .book-card {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
+    }
+
+    .book-image img {
+        width: 100%;
         height: auto;
     }
 
-    .book-image {
-        width: 80%;
-        height: 250px;
-        margin-bottom: 20px;
-    }
-
-    .book-details {
-        text-align: center;
-    }
-
     .book-title {
-        font-size: 1.5rem;
-    }
-
-    .book-author {
-        font-size: 1rem;
+        font-size: 16px;
     }
 
     .book-desc, .book-abstract {
-        font-size: 0.9rem;
-    }
-
-    .buttons {
-        display: flex;
-        justify-content: center;
-        margin-top: 15px;
-    }
-
-    .buttons .btn {
-        margin-right: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .book-title {
-        font-size: 1.2rem;
-    }
-
-    .book-author {
-        font-size: 0.9rem;
-    }
-
-    .book-desc, .book-abstract {
-        font-size: 0.8rem;
+        font-size: 12px;
     }
 }
