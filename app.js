@@ -21,10 +21,10 @@ async function loadBooks() {
             <p class="book-desc">${book.desc}</p>
             <p class="book-abstract">${book.abstract.length > 100 ? book.abstract.substring(0, 100) + '...' : book.abstract}</p>
             <div class="buttons">
-              // <form method="POST" action="#" onsubmit="deleteBook(event, '${book.id}')">
-              //   <input type="hidden" value="${book.id}">
-              //   <button type="submit" class="btn btn-danger">Delete</button>
-              // </form>
+                <!-- <form method="POST" action="#" onsubmit="deleteBook(event, '${book.id}')">
+                  <input type="hidden" value="${book.id}">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form> -->
               <a href="update.html?id=${book.id}" class="btn btn-warning">Update</a>
             </div>
           </div>
