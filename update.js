@@ -50,29 +50,31 @@ async function updateBook(event) {
     const data = await response.json();
     const books = data.data;
 
-    // Find and update the book
-    const bookIndex = books.findIndex(book => book.id === bookId);
-    if (bookIndex !== -1) {
-      books[bookIndex] = { ...books[bookIndex], ...updatedData };
+    // Find and remove the old book
+    const updatedBooks = books.filter(book => book.id !== bookId);
 
-      const updateResponse = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: books,
-        }),
-      });
+    // Add the updated book to the list
+    updatedBooks.push({
+      id: bookId, // Keep the same ID
+      ...updatedData,
+    });
 
-      if (updateResponse.status === 201) {
-        alert("Book updated successfully!");
-        window.location.href = "index.html"; // Redirect to the main page after update
-      } else {
-        alert("Failed to update book. Please try again.");
-      }
+    // Send the updated list of books back to the API
+    const updateResponse = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: updatedBooks,
+      }),
+    });
+
+    if (updateResponse.status === 201) {
+      alert("Book updated successfully!");
+      window.location.href = "index.html"; // Redirect to the main page after update
     } else {
-      alert("Book not found.");
+      alert("Failed to update book. Please try again.");
     }
   } catch (error) {
     console.error("Error updating book:", error);
