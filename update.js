@@ -2,6 +2,11 @@ const API_URL = "https://api.apispreadsheets.com/data/Ao2HHkALjkDMjfci/";
 const params = new URLSearchParams(window.location.search);
 const bookId = params.get("id"); // Get the book ID from the URL
 
+// Go back to the main page
+function goBack() {
+  window.location.href = "index.html";
+}
+
 // Load existing book data into the form
 async function loadBookData() {
   try {
