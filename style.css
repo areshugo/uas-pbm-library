@@ -14,7 +14,7 @@ body {
 
 .book-image {
     flex-shrink: 0;
-    width: 120px;
+    width: 150px;
     height: 100%;
     display: flex;
     justify-content: center;
