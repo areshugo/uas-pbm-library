@@ -43,12 +43,18 @@ async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    // Construct the DELETE query URL with simplified query syntax
-    const deleteUrl = `https://api.apispreadsheets.com/data/3a24vZuKqrS2rNnl/?query=delete from 3a24vZuKqrS2rNnl where id='${bookId}'`;
+    // Prepare the DELETE request data
+    const requestData = {
+      query: `delete from 3a24vZuKqrS2rNnl where id='${bookId}'`,
+    };
 
-    // Send the GET request with the query parameter in the URL
-    const deleteResponse = await fetch(deleteUrl, {
-      method: "GET", // Use GET since the query is passed in the URL
+    // Send the POST request with the query in the body
+    const deleteResponse = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
     });
 
     // Log the full response status and text
