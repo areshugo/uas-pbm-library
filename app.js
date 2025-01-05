@@ -25,6 +25,7 @@ async function loadBooks() {
                 <input type="hidden" value="${book.id}">
                 <button type="submit" class="btn btn-danger">Delete</button>
               </form>
+              <a href="update.html?id=${book.id}" class="btn btn-warning">Update</a>
             </div>
           </div>
         </div>
