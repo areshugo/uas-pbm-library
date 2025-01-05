@@ -43,30 +43,22 @@ async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    // Step 1: Fetch the entire dataset
-    const fetchResponse = await fetch(API_URL);
-    const data = await fetchResponse.json();
-    const books = data.data;
-
-    // Step 2: Filter out the book to delete
-    const updatedBooks = books.filter(book => book.id !== bookId);
-
-    // Step 3: Overwrite the dataset without the deleted book
-    const overwriteResponse = await fetch(API_URL, {
+    // Use the API's query parameter to delete a specific book by its ID
+    const deleteResponse = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        data: updatedBooks,
+        query: `DELETE FROM kRSp6cACWE8vOM9J WHERE id='${bookId}'`,
       }),
     });
 
-    if (overwriteResponse.status === 201) {
+    if (deleteResponse.status === 201) {
       alert("Book deleted successfully!");
       loadBooks(); // Reload the updated book list
     } else {
-      alert("Failed to delete book. Please try again.");
+      alert("Failed to delete the book. Please try again.");
     }
   } catch (error) {
     console.error("Error deleting book:", error);
