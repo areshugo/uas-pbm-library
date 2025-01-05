@@ -1,74 +1,87 @@
 const API_URL = "https://api.apispreadsheets.com/data/Ao2HHkALjkDMjfci/";
-const params = new URLSearchParams(window.location.search);
-const bookId = params.get("id"); // Get the book ID from the URL
 
 // Go back to the main page
 function goBack() {
   window.location.href = "index.html";
 }
 
-// Load existing book data into the form
+// Function to load book data into the update form
 async function loadBookData() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const bookId = urlParams.get("id");
+
   try {
     const response = await fetch(API_URL);
     const data = await response.json();
+    const book = data.data.find(b => b.id === bookId);
 
-    // Find the book with the matching ID
-    const book = data.data.find(book => book.id === bookId);
     if (book) {
       document.getElementById("title").value = book.title;
       document.getElementById("author").value = book.author;
+      document.getElementById("img").value = book.img;
       document.getElementById("desc").value = book.desc;
       document.getElementById("abstract").value = book.abstract;
     } else {
-      alert("Book not found!");
+      alert("Book not found.");
     }
   } catch (error) {
     console.error("Error loading book data:", error);
-    alert("Failed to load book data. Please try again later.");
+    alert("Failed to load book data.");
   }
 }
 
-// Handle form submission for updating book data
-document.getElementById("update-form").addEventListener("submit", async function (event) {
+// Function to update the book data
+async function updateBook(event) {
   event.preventDefault();
 
-  const updatedBook = {
-    id: bookId,
+  const urlParams = new URLSearchParams(window.location.search);
+  const bookId = urlParams.get("id");
+
+  const updatedData = {
     title: document.getElementById("title").value,
     author: document.getElementById("author").value,
+    img: document.getElementById("img").value,
     desc: document.getElementById("desc").value,
     abstract: document.getElementById("abstract").value,
   };
 
   try {
-    // Construct the update query
-    const query = `
-      update set 
-      title='${updatedBook.title}', 
-      author='${updatedBook.author}', 
-      desc='${updatedBook.desc}', 
-      abstract='${updatedBook.abstract}' 
-      where id='${updatedBook.id}'
-    `.trim();
+    const response = await fetch(API_URL);
+    const data = await response.json();
+    const books = data.data;
 
-    const response = await fetch(`${API_URL}?query=${encodeURIComponent(query)}`, {
-      method: "GET",
-    });
+    // Find and update the book
+    const bookIndex = books.findIndex(book => book.id === bookId);
+    if (bookIndex !== -1) {
+      books[bookIndex] = { ...books[bookIndex], ...updatedData };
 
-    if (response.status === 200) {
-      alert("Book updated successfully!");
-      window.location.href = "index.html"; // Redirect to the main page
+      const updateResponse = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: books,
+        }),
+      });
+
+      if (updateResponse.status === 201) {
+        alert("Book updated successfully!");
+        window.location.href = "index.html"; // Redirect to the main page after update
+      } else {
+        alert("Failed to update book. Please try again.");
+      }
     } else {
-      const errorText = await response.text();
-      console.error("Error response:", errorText);
-      throw new Error("Failed to update book");
+      alert("Book not found.");
     }
   } catch (error) {
     console.error("Error updating book:", error);
-    alert("Failed to update the book. Please try again later.");
+    alert("An error occurred while updating the book.");
   }
-});
+}
 
-// Load the book data when the page is ready
-window.onload = loadBookData;
+// Load book data and set up event listener
+window.onload = () => {
+  loadBookData();
+  document.getElementById("update-book-form").addEventListener("submit", updateBook);
+};
