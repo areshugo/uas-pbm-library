@@ -23,11 +23,11 @@ async function loadBooks() {
                         <div class="book-image">
                             <img src="${book.img}" alt="${book.title}">
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">${book.title}</h5>
-                            <p class="card-text">by ${book.author}</p>
-                            <p class="card-text">${book.desc}</p>
-                            <p class="card-text">${book.abstract}</p>
+                        <div class="book-details">
+                            <h5 class="book-title">${book.title}</h5>
+                            <p class="book-author">by ${book.author}</p>
+                            <p class="book-desc">${book.desc}</p>
+                            <p class="book-abstract">${book.abstract}</p>
                             <div class="buttons">
                                 <form method="POST" action="/update/${book.id}" style="display: inline;">
                                     <button type="submit" class="btn btn-warning">Update</button>
