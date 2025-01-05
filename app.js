@@ -43,20 +43,10 @@ async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        action: "delete",
-        query: `id='${bookId}'`,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
+    // Use the documented syntax for deletion
+    const response = await fetch(`${API_URL}?query=delete from Ao2HHkALjkDMjfci where id='${bookId}'`);
+    
+    if (response.status === 200) {
       alert("Book deleted successfully!");
       loadBooks(); // Reload the book list after deletion
     } else {
