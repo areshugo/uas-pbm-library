@@ -43,34 +43,20 @@ async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    // Construct the DELETE request data
-    const deleteData = {
-      data: {
-        id: bookId,
-      },
-      query: `delete from 3a24vZuKqrS2rNnl where id='${bookId}'`, // Ensure this query matches the format
-    };
+    // Construct the DELETE query URL
+    const deleteUrl = `https://api.apispreadsheets.com/data/3a24vZuKqrS2rNnl/?query=delete%20from%203a24vZuKqrS2rNnl%20where%20id%3D%27${bookId}%27`;
 
-    // Send a POST request to delete the book
-    const deleteResponse = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(deleteData),
+    // Send the DELETE request with the query parameter in the URL
+    const deleteResponse = await fetch(deleteUrl, {
+      method: "GET", // Use GET since the query is passed in the URL
     });
 
-    // Log the full response status and text
-    const responseText = await deleteResponse.text();
-    console.log("Delete response status:", deleteResponse.status);
-    console.log("Delete response text:", responseText);
-
+    // Check the response status
     if (deleteResponse.status === 200) {
       alert("Book deleted successfully!");
       await loadBooks(); // Reload the updated book list
     } else {
-      // If the response body is empty, log the text
-      const errorDetails = responseText ? JSON.parse(responseText) : { error: "Unknown error occurred" };
+      const errorDetails = await deleteResponse.json();
       console.error("Error response from server:", errorDetails);
       alert("Failed to delete the book. Please try again.");
     }
