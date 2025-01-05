@@ -1,79 +1,55 @@
+// API URL to fetch data from ApiSpreadsheets
 const API_URL = "https://api.apispreadsheets.com/data/Ao2HHkALjkDMjfci/";
 
-// Function to get books from the API
-async function getBooks() {
+// Function to fetch data and create cards dynamically
+async function loadBooks() {
     try {
+        // Fetch the data from the API
         const response = await fetch(API_URL);
         const data = await response.json();
+
+        // Get the book data
         const books = data.data;
-        displayBooks(books);
+
+        // Get the container where we want to add book cards
+        const bookContainer = document.getElementById('book-container');
+        bookContainer.innerHTML = '';  // Clear any existing content
+
+        // Loop through each book and create a card
+        books.forEach(book => {
+            const bookCard = `
+                <div class="col-md-4">
+                    <div class="card book-card">
+                        <div class="book-image">
+                            <img src="${book.img}" alt="${book.title}">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">${book.title}</h5>
+                            <p class="card-text">by ${book.author}</p>
+                            <p class="card-text">${book.desc}</p>
+                            <p class="card-text">${book.abstract}</p>
+                            <div class="buttons">
+                                <form method="POST" action="/update/${book.id}" style="display: inline;">
+                                    <button type="submit" class="btn btn-warning">Update</button>
+                                </form>
+                                <form method="POST" action="/delete/${book.id}" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add the book card to the container
+            bookContainer.innerHTML += bookCard;
+        });
     } catch (error) {
-        console.error("Error fetching books:", error);
+        console.error('Error loading books:', error);
+        const bookContainer = document.getElementById('book-container');
+        bookContainer.innerHTML = '<p>Failed to load books. Please try again later.</p>';
     }
 }
 
-// Function to display books as cards
-function displayBooks(books) {
-    const bookList = document.getElementById("book-list");
-    bookList.innerHTML = '';  // Clear existing books
-
-    books.forEach(book => {
-        const card = document.createElement("div");
-        card.classList.add("book-card");
-
-        card.innerHTML = `
-            <h3>${book.title}</h3>
-            <p><strong>Author:</strong> ${book.author}</p>
-            <p>${book.desc}</p>
-            <p><strong>Abstract:</strong> ${book.abstract}</p>
-            <img src="${book.img}" alt="${book.title}" width="100">
-            <button onclick="deleteBook('${book.id}')">Delete</button>
-        `;
-
-        bookList.appendChild(card);
-    });
-}
-
-// Function to delete a book
-async function deleteBook(bookId) {
-    const query = `delete from Ao2HHkALjkDMjfci where id='${bookId}'`;
-    const response = await fetch(`${API_URL}?query=${query}`, { method: "GET" });
-    if (response.ok) {
-        alert("Book deleted!");
-        getBooks(); // Refresh book list
-    } else {
-        alert("Error deleting book");
-    }
-}
-
-// Function to add a new book
-document.getElementById("add-book-form").addEventListener("submit", async function(event) {
-    event.preventDefault();
-
-    const newBook = {
-        id: document.getElementById("id").value,
-        title: document.getElementById("title").value,
-        author: document.getElementById("author").value,
-        desc: document.getElementById("desc").value,
-        abstract: document.getElementById("abstract").value,
-        img: document.getElementById("img").value,
-    };
-
-    const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ data: newBook })
-    });
-
-    if (response.ok) {
-        alert("Book added!");
-        getBooks(); // Refresh book list
-    } else {
-        alert("Error adding book");
-    }
-});
-
-// Call the getBooks function to load the books initially
-getBooks();
+// Load books when the page loads
+window.onload = loadBooks;
