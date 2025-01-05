@@ -38,24 +38,34 @@ async function loadBooks() {
   }
 }
 
-// Function to delete a book
 async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    // Encode the query string
-    const query = `delete from Ao2HHkALjkDMjfci where id='id0007'`;
-    const encodedQuery = encodeURIComponent(query);
-    console.log(`${API_URL}?query=${encodedQuery}`);
-    // Logs: https://api.apispreadsheets.com/data/Ao2HHkALjkDMjfci/?query=delete%20from%20Ao2HHkALjkDMjfci%20where%20id%3D%27id0007%27
+    // Step 1: Fetch the entire dataset
+    const fetchResponse = await fetch(API_URL);
+    const data = await fetchResponse.json();
+    const books = data.data;
 
-    const response = await fetch(`${API_URL}?query=${encodedQuery}`);
-    
-    if (response.status === 200) {
+    // Step 2: Filter out the book to delete
+    const updatedBooks = books.filter(book => book.id !== bookId);
+
+    // Step 3: Overwrite the dataset without the deleted book
+    const overwriteResponse = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: updatedBooks,
+      }),
+    });
+
+    if (overwriteResponse.status === 201) {
       alert("Book deleted successfully!");
-      loadBooks(); // Reload the book list
+      loadBooks(); // Reload the updated book list
     } else {
-      alert(`Failed to delete the book. Error code: ${response.status}`);
+      alert("Failed to delete book. Please try again.");
     }
   } catch (error) {
     console.error("Error deleting book:", error);
