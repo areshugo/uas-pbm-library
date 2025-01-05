@@ -43,11 +43,22 @@ async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    // Construct the DELETE query URL
-    const deleteUrl = `${API_URL}?query=delete from 3a24vZuKqrS2rNnl where id='${bookId}'`;
+    // Construct the DELETE request data
+    const deleteData = {
+      data: {
+        id: bookId,
+      },
+      query: `delete from 3a24vZuKqrS2rNnl where id='${bookId}'`, // Ensure this query matches the format
+    };
 
-    // Make the DELETE request
-    const deleteResponse = await fetch(deleteUrl);
+    // Send a POST request to delete the book
+    const deleteResponse = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(deleteData),
+    });
 
     // Check the response status
     if (deleteResponse.status === 200) {
