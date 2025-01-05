@@ -65,7 +65,8 @@ async function deleteBook(event, bookId) {
       alert("Book deleted successfully!");
       await loadBooks(); // Reload the updated book list
     } else {
-      const errorDetails = await deleteResponse.json();
+      // Check if response has content before parsing
+      const errorDetails = deleteResponse.status !== 204 ? await deleteResponse.json() : {};
       console.error("Error response from server:", errorDetails);
       alert("Failed to delete the book. Please try again.");
     }
