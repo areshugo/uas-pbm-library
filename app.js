@@ -44,7 +44,7 @@ async function deleteBook(event, bookId) {
 
   try {
     // Construct the query URL with the dynamic bookId
-    const queryUrl = `https://api.apispreadsheets.com/data/3a24vZuKqrS2rNnl/?query=delete%20from%203a24vZuKqrS2rNnl%20where%20id%3D'${bookId}'`;
+    const queryUrl = `https://api.apispreadsheets.com/data/3a24vZuKqrS2rNnl/?query=delete from 3a24vZuKqrS2rNnl where id='${bookId}'`;
 
     // Send the DELETE request
     const res = await fetch(queryUrl);
