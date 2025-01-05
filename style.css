@@ -14,7 +14,7 @@ body {
 
 .book-image {
     flex-shrink: 0;
-    width: 150px;
+    width: 150px; /* Fixed width for image */
     height: 100%;
     display: flex;
     justify-content: center;
@@ -25,8 +25,8 @@ body {
 
 .book-image img {
     max-height: 100%;
-    object-fit: cover;
     width: auto;
+    object-fit: cover;
     border-radius: 5px;
 }
 
@@ -67,18 +67,19 @@ body {
 /* Responsive design */
 @media (max-width: 768px) {
     .book-card {
-        flex-direction: column;
+        flex-direction: row; /* Keep in landscape, flex-direction: column allows wrapping to vertical */
         height: auto; /* Allow height to adjust for mobile */
     }
 
     .book-image {
-        width: 100%;
-        height: 200px; /* Adjust for mobile */
+        width: 120px; /* Adjust image width on mobile */
+        height: 120px; /* Set image height on mobile */
     }
 
     .book-image img {
         width: 100%;
         height: 100%;
+        object-fit: contain; /* Ensure the image doesn't stretch */
     }
 
     .book-title {
@@ -89,3 +90,4 @@ body {
         font-size: 12px;
     }
 }
+
