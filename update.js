@@ -61,7 +61,7 @@ async function updateBook(event) {
           desc: updatedData.desc,
           abstract: updatedData.abstract,
         },
-        query: `select * from Ao2HHkALjkDMjfci where id='${bookId}'`,  // Ensure this query matches the format used in your example
+        query: `select * from 3a24vZuKqrS2rNnl where id='${bookId}'`,  // Ensure this query matches the format used in your example
       }),
     });
 
