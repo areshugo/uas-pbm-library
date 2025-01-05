@@ -26,7 +26,7 @@ async function loadBooks() {
                         <h5 class="book-title">${book.title}</h5>
                         <p class="book-author">by ${book.author}</p>
                         <p class="book-desc">${book.desc}</p>
-                        <p class="book-abstract">${book.abstract}</p>
+                        <p class="book-abstract">${book.abstract.length > 100 ? book.abstract.substring(0, 100) + '...' : book.abstract}</p>
                         <div class="buttons">
                             <a href="update.html?id=${book.id}" class="btn btn-warning">Update</a>
                             <form method="POST" action="#" style="display: inline;">
