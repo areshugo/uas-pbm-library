@@ -43,14 +43,15 @@ async function deleteBook(event, bookId) {
   event.preventDefault();
 
   try {
-    // Use the documented syntax for deletion
-    const response = await fetch(`${API_URL}?query=delete from Ao2HHkALjkDMjfci where id='${bookId}'`);
+    // Encode the query string
+    const encodedQuery = encodeURIComponent(`delete from Ao2HHkALjkDMjfci where id='${bookId}'`);
+    const response = await fetch(`${API_URL}?query=${encodedQuery}`);
     
     if (response.status === 200) {
       alert("Book deleted successfully!");
-      loadBooks(); // Reload the book list after deletion
+      loadBooks(); // Reload the book list
     } else {
-      alert("Failed to delete the book. Please try again.");
+      alert(`Failed to delete the book. Error code: ${response.status}`);
     }
   } catch (error) {
     console.error("Error deleting book:", error);
