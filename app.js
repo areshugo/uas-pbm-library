@@ -1,74 +1,135 @@
 const API_URL = "https://api.apispreadsheets.com/data/Ao2HHkALjkDMjfci/";
-const params = new URLSearchParams(window.location.search);
-const bookId = params.get("id"); // Get the book ID from the URL
 
-// Go back to the main page
-function goBack() {
-  window.location.href = "index.html";
-}
-
-// Load existing book data into the form
-async function loadBookData() {
+// Function to load books
+async function loadBooks() {
   try {
     const response = await fetch(API_URL);
     const data = await response.json();
+    const books = data.data;
+    const bookContainer = document.getElementById("book-container");
+    bookContainer.innerHTML = "";
 
-    // Find the book with the matching ID
-    const book = data.data.find(book => book.id === bookId);
-    if (book) {
-      document.getElementById("title").value = book.title;
-      document.getElementById("author").value = book.author;
-      document.getElementById("desc").value = book.desc;
-      document.getElementById("abstract").value = book.abstract;
-    } else {
-      alert("Book not found!");
-    }
+    books.forEach(book => {
+      const bookCard = `
+        <div class="book-card">
+          <div class="book-image">
+            <img src="${book.img}" alt="${book.title}">
+          </div>
+          <div class="book-details">
+            <h5 class="book-title">${book.title}</h5>
+            <p class="book-author">by ${book.author}</p>
+            <p class="book-desc">${book.desc}</p>
+            <p class="book-abstract">${book.abstract.length > 100 ? book.abstract.substring(0, 100) + '...' : book.abstract}</p>
+            <div class="buttons">
+              <form method="POST" action="#" onsubmit="deleteBook(event, '${book.id}')">
+                <input type="hidden" value="${book.id}">
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+              <a href="update.html?id=${book.id}" class="btn btn-warning">Update</a>
+            </div>
+          </div>
+        </div>
+      `;
+      bookContainer.innerHTML += bookCard;
+    });
   } catch (error) {
-    console.error("Error loading book data:", error);
-    alert("Failed to load book data. Please try again later.");
+    console.error("Error loading books:", error);
+    const bookContainer = document.getElementById("book-container");
+    bookContainer.innerHTML = "<p>Failed to load books. Please try again later.</p>";
   }
 }
 
-// Handle form submission for updating book data
-document.getElementById("update-form").addEventListener("submit", async function (event) {
+async function deleteBook(event, bookId) {
   event.preventDefault();
 
-  const updatedBook = {
-    id: bookId,
-    title: document.getElementById("title").value,
-    author: document.getElementById("author").value,
-    desc: document.getElementById("desc").value,
-    abstract: document.getElementById("abstract").value,
-  };
-
   try {
-    // Construct the update query
-    const query = `
-      update set 
-      title='${updatedBook.title}', 
-      author='${updatedBook.author}', 
-      desc='${updatedBook.desc}', 
-      abstract='${updatedBook.abstract}' 
-      where id='${updatedBook.id}'
-    `.trim();
+    // Step 1: Fetch the entire dataset
+    const fetchResponse = await fetch(API_URL);
+    const data = await fetchResponse.json();
+    const books = data.data;
 
-    const response = await fetch(`${API_URL}?query=${encodeURIComponent(query)}`, {
-      method: "GET",
+    // Step 2: Filter out the book to delete
+    const updatedBooks = books.filter(book => book.id !== bookId);
+
+    // Step 3: Overwrite the dataset without the deleted book
+    const overwriteResponse = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: updatedBooks,
+      }),
     });
 
-    if (response.status === 200) {
-      alert("Book updated successfully!");
-      window.location.href = "index.html"; // Redirect to the main page
+    if (overwriteResponse.status === 201) {
+      alert("Book deleted successfully!");
+      loadBooks(); // Reload the updated book list
     } else {
-      const errorText = await response.text();
-      console.error("Error response:", errorText);
-      throw new Error("Failed to update book");
+      alert("Failed to delete book. Please try again.");
     }
   } catch (error) {
-    console.error("Error updating book:", error);
-    alert("Failed to update the book. Please try again later.");
+    console.error("Error deleting book:", error);
+    alert("An error occurred while deleting the book.");
   }
-});
+}
 
-// Load the book data when the page is ready
-window.onload = loadBookData;
+// Function to create a new book
+async function createBook(event) {
+  event.preventDefault();
+
+  // Get form data
+  const title = document.getElementById("title").value;
+  const author = document.getElementById("author").value;
+  const desc = document.getElementById("desc").value;
+  const abstract = document.getElementById("abstract").value;
+  const img = document.getElementById("img").value;
+
+  // Get the latest id and increment it
+  const response = await fetch(API_URL);
+  const data = await response.json();
+  const books = data.data;
+
+  const latestId = books.length
+    ? Math.max(...books.map(book => parseInt(book.id.replace("id", ""), 10))) + 1
+    : 1;
+
+  const newId = `id${String(latestId).padStart(4, "0")}`;
+
+  // Send a POST request to add the new book
+  try {
+    const result = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: {
+          id: newId,
+          title,
+          author,
+          desc,
+          abstract,
+          img,
+        },
+      }),
+    });
+
+    if (result.ok) {
+      alert("Book added successfully!");
+      document.getElementById("create-form").reset();
+      loadBooks(); // Reload the book list after adding
+    } else {
+      alert("Failed to add the book. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error creating book:", error);
+    alert("An error occurred while adding the book.");
+  }
+}
+
+// Load books when the page loads
+window.onload = () => {
+  loadBooks();
+  document.getElementById("create-form").addEventListener("submit", createBook);
+};
