@@ -26,10 +26,10 @@ async function loadBooks() {
                         <h5 class="book-title">${book.title}</h5>
                         <p class="book-author">by ${book.author}</p>
                         <p class="book-desc">${book.desc}</p>
-                        <p class="book-abstract">${book.abstract.length > 100 ? book.abstract.substring(0, 100) + '...' : book.abstract}</p>
+                        <p class="book-abstract">${book.abstract}</p>
                         <div class="buttons">
                             <a href="update.html?id=${book.id}" class="btn btn-warning">Update</a>
-                            <form method="POST" action="/delete/${book.id}" style="display: inline;">
+                            <form method="POST" action="#" style="display: inline;">
                                 <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">Delete</button>
                             </form>
                         </div>
@@ -48,15 +48,29 @@ async function loadBooks() {
 
 // Delete Book
 async function deleteBook(bookId) {
-    const response = await fetch(`${API_URL}${bookId}`, {
-        method: 'DELETE',
-    });
+    try {
+        // Sending a POST request to delete the book
+        const response = await fetch(`${API_URL}`, {
+            method: 'POST',  // POST method for delete action
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'delete',  // Assuming the API needs an 'action' field
+                bookId: bookId,    // Use the correct book ID (e.g., id0001)
+            }),
+        });
 
-    if (response.ok) {
-        alert('Book deleted successfully!');
-        loadBooks(); // Reload the books
-    } else {
-        alert('Failed to delete book.');
+        // Check if the response was successful
+        if (response.ok) {
+            alert('Book deleted successfully!');
+            loadBooks(); // Reload the books after deletion
+        } else {
+            alert('Failed to delete book.');
+        }
+    } catch (error) {
+        console.error('Error deleting book:', error);
+        alert('An error occurred while deleting the book.');
     }
 }
 
@@ -64,7 +78,17 @@ async function deleteBook(bookId) {
 document.getElementById('create-book-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
+    // Fetch the current data to generate a new ID
+    const response = await fetch(API_URL);
+    const data = await response.json();
+    const books = data.data;
+
+    // Get the highest existing ID
+    const lastId = books.length ? Math.max(...books.map(book => parseInt(book.id.replace('id', '')))) : 0;
+    const newId = 'id' + String(lastId + 1).padStart(4, '0');  // Increment ID (e.g., id0001, id0002, ...)
+
     const newBook = {
+        id: newId,  // New incrementing ID
         title: document.getElementById('title').value,
         author: document.getElementById('author').value,
         img: document.getElementById('img').value,
@@ -72,7 +96,7 @@ document.getElementById('create-book-form').addEventListener('submit', async fun
         abstract: document.getElementById('abstract').value
     };
 
-    const response = await fetch(API_URL, {
+    const postResponse = await fetch(API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -80,7 +104,7 @@ document.getElementById('create-book-form').addEventListener('submit', async fun
         body: JSON.stringify(newBook),
     });
 
-    if (response.ok) {
+    if (postResponse.ok) {
         alert('Book added successfully!');
         loadBooks(); // Reload the books
         document.getElementById('create-book-form').reset(); // Clear the form
