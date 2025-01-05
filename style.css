@@ -25,7 +25,7 @@ body {
 
 .book-image img {
     max-height: 100%;
-    width: auto;
+    width: 100%; /* Make the image width responsive */
     object-fit: cover;
     border-radius: 5px;
 }
@@ -67,27 +67,39 @@ body {
 /* Responsive design */
 @media (max-width: 768px) {
     .book-card {
-        flex-direction: row; /* Keep in landscape, flex-direction: column allows wrapping to vertical */
-        height: auto; /* Allow height to adjust for mobile */
+        flex-direction: row; /* Keep in landscape mode on mobile */
+        height: auto; /* Allow height to adjust based on content */
     }
 
     .book-image {
-        width: 120px; /* Adjust image width on mobile */
-        height: 120px; /* Set image height on mobile */
+        width: 50%; /* Use half of the available width for the image on mobile */
+        height: auto; /* Adjust height for mobile layout */
     }
 
     .book-image img {
         width: 100%;
         height: 100%;
-        object-fit: contain; /* Ensure the image doesn't stretch */
+        object-fit: cover; /* Maintain aspect ratio without stretching */
+    }
+
+    .book-details {
+        flex-grow: 0; /* Allow the text area to not take more space than required */
+        padding: 10px;
     }
 
     .book-title {
         font-size: 16px;
     }
 
-    .book-desc, .book-abstract {
+    .book-author {
+        font-size: 14px;
+    }
+
+    .book-desc {
+        display: none; /* Hide the description on mobile */
+    }
+
+    .book-abstract {
         font-size: 12px;
     }
 }
-
